@@ -107,5 +107,5 @@ elif page == "Plot":
 
 # --- Side 4: Dummy ---
 elif page == "Side 4":
-    st.header("Side 4 (plassholder)")
-    st.write("Her kan du legge til mer innhold senere.")
+    st.header("Side 4 (Dummy)")
+    st.write("Hei! Dette er en dummy-side for fremtidig innhold.")
