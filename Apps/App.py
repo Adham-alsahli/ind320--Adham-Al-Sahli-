@@ -12,6 +12,10 @@ def load_data():
      # Laster data fra CSV-fil
     return pd.read_csv("Ind320\Data\open-meteo-subset.csv")
 
+
+
+
+
 # Prøv å laste data
 try:
     df = load_data()
