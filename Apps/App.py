@@ -5,12 +5,35 @@ from pymongo import MongoClient
 import os
 from pymongo.server_api import ServerApi
 import matplotlib.pyplot as plt
+from pathlib import Path
+
+# Ensure this script is run via `streamlit run` so Streamlit runtime (session/context) is available.
+try:
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+    if get_script_run_ctx() is None:
+        print("This app must be started with: streamlit run Apps/App.py\nExiting to avoid missing Streamlit runtime.")
+        raise SystemExit(0)
+except Exception:
+    # If import fails or no context, instruct and exit when not run by streamlit.
+    print("This app should be run with 'streamlit run' for full functionality. Exiting.")
+    raise SystemExit(0)
+
 st.set_page_config(page_title="IND320 App", layout="wide")
+
 
 @st.cache_data
 def load_data():
-     # Laster data fra CSV-fil
-    return pd.read_csv("Ind320\Data\open-meteo-subset.csv")
+    # Laster data fra CSV-fil (bruker en robust sti relativt til app-mappen)
+    base = Path(__file__).resolve().parent.parent  # project root (Ind320)
+    csv_path = base / "open-meteo-subset.csv"
+    # also accept Data/ subfolder for backward compatibility
+    if not csv_path.exists():
+        alt = base / "Data" / "open-meteo-subset.csv"
+        if alt.exists():
+            csv_path = alt
+    if not csv_path.exists():
+        raise FileNotFoundError(f"CSV not found at {csv_path}. Place 'open-meteo-subset.csv' in the project root or Data/ folder.")
+    return pd.read_csv(csv_path)
 
 
 
