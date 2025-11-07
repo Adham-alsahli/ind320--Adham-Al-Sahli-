@@ -227,30 +227,39 @@ elif page == "New_A":
     selected_groups = st.session_state.get("selected_group", ["hydro", "wind", "solar", "thermal", "other"])
 # data loading function
     @st.cache_data(ttl= 6000)
-    def load_mongo_data():# Load data from MongoDB
-        with open("C:\\Users\\adham\\Documents\\Nmbu\\5\\ind320\\IND320-main\\Ind320\\.streamlit\\secrets.toml", "rb") as f:
-            cfg = tomllib.load(f)
-#         Laster inn brukernavn og passord for MongoDB fra secrets.toml
-        USR = cfg["MongoDB"]["username"]
-        PWD = cfg["MongoDB"]["pwd"]
+    def load_mongo_data():
+    # Les fra Streamlit Secrets (Cloud UI)
+        uri = st.secrets["MongoDB"]["uri"]
+        database = st.secrets["MongoDB"].get("database", "IND320_assignment_2")
+        collection = st.secrets["MongoDB"].get("collection", "production_per_group_hour")
 
+        client = MongoClient(uri, server_api=ServerApi("1"))
+        col = client[database][collection]
 
+        docs = list(col.find({}, {"_id": 0}))
+        if not docs:
+            st.warning("MongoDB-samlingen er tom.")
+        df_local = pd.DataFrame(docs)
 
-        #USR, PWD = open("../.streamlit/secrects.toml")["MongoDB"].read().splitlines()
-        uri = f"mongodb+srv://{USR}:{PWD}@adham.j1syfjw.mongodb.net/?retryWrites=true&w=majority&appName=IND320-Adham"
+        # Standardiser forventede kolonnenavn
+        def pick(df, name, *alts):
+            for c in (name,) + alts:
+                if c in df.columns:
+                    return c
+            return None
 
-        # Creating a new client and connecting to server
-        client = MongoClient(uri, server_api=ServerApi('1'))
-        db = client["IND320_assignment_2"]
-        collection = db["production_per_group_hour"]
+        t = pick(df_local, "starttime", "start_time")
+        a = pick(df_local, "pricearea", "price_area")
+        g = pick(df_local, "productiongroup", "production_group")
+        q = pick(df_local, "quantitykwh", "quantity_kwh")
+        if not all([t, a, g, q]):
+            raise RuntimeError("Mangler forventede felter i Mongo-dokumentene.")
 
-        data = list(collection.find())
-        elhub_dataBase = pd.DataFrame(data)
-        # Convert time column to datetime if needed
-        if "starttime" in elhub_dataBase.columns:
-            elhub_dataBase["starttime"] = pd.to_datetime(elhub_dataBase["starttime"])
+        df_local[t] = pd.to_datetime(df_local[t], utc=True, errors="coerce")
+        df_local = df_local.dropna(subset=[t, a, g])
 
-        return elhub_dataBase
+        return df_local.rename(columns={t:"starttime", a:"pricearea", g:"productiongroup", q:"quantitykwh"})
+
 #stL and spectrogram code functions
 
     def stl_decomposition(df, price_area = "NO5", production_group = "solar", period = 24, seasonal = 7, trend = None, robust = True):
