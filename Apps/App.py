@@ -73,7 +73,7 @@ if page == "Hjem":
     )
 
 elif page == "MongoDB":
-    st.header("Side 4 - Elhub produksjon 2021")
+    st.header("Elhub produksjon 2021")
 
     #  Mongo tilkobling
     from pymongo import MongoClient
