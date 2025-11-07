@@ -17,14 +17,13 @@ try:
     from statsmodels.tsa.seasonal import STL
     HAS_STATSMODELS = True
 except ModuleNotFoundError:
-    # vi håndterer dette senere i stl_decomposition()
+    #  håndterer dette senere i stl_decomposition()
     pass
 
 from scipy.signal import spectrogram
 import requests as rquests
 
 
-# Ensure this script is run via `streamlit run` so Streamlit runtime (session/context) is available.
 try:
     from streamlit.runtime.scriptrunner import get_script_run_ctx
     if get_script_run_ctx() is None:
