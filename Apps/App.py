@@ -81,7 +81,7 @@ page = st.sidebar.radio("Velg side:",
                              "STL Og Spectrogram 📊",
                              "Map 🗺️",
                              "Sliding Window Correlation 📉",
-                             "forecasting 📈"
+                             "Forecasting 📅"
                             ])
 
 
