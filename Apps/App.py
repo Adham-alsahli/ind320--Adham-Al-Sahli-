@@ -751,7 +751,7 @@ elif page == "Map 🗺️":
 
         return prod_data_df, cons_data_df
     
-    with open("C:\\Users\\adham\\Documents\\Nmbu\\5\\ind320\\IND320-main\\Ind320\\Data\\file.geojson", "r", encoding="utf-8") as f:
+    with open("Data/file.geojson", "r", encoding="utf-8") as f:
         geo_data = json.load(f)
 
 
