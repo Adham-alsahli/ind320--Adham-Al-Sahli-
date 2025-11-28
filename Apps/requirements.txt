@@ -25,3 +25,6 @@ kaleido
 lipsum
 pillow
 folium
+geopy
+streamlit-folium
+streamlit-aggrid
