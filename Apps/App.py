@@ -17,6 +17,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import datetime as dt
 import statsmodels.api as sm
+from pathlib import Path
 
 
 # Robust import av STL
@@ -750,8 +751,8 @@ elif page == "Map 🗺️":
                 df['starttime'] = pd.to_datetime(df['starttime'])
 
         return prod_data_df, cons_data_df
-    
-    with open("Data/file.geojson", "r", encoding="utf-8") as f:
+    geojson_path = Path(__file__).resolve().parent.parent / "Data" / "file.geojson"
+    with open(geojson_path, "r", encoding="utf-8") as f:
         geo_data = json.load(f)
 
 
