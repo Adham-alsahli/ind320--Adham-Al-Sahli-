@@ -751,7 +751,8 @@ elif page == "Map 🗺️":
                 df['starttime'] = pd.to_datetime(df['starttime'])
 
         return prod_data_df, cons_data_df
-    with  open("data/file.geojson", "r", encoding="utf-8") as f:
+    with open("Data/file.geojson", "r", encoding="utf-8") as f:
+
         geo_data = json.load(f)
 
         for area in geo_data["features"]:
